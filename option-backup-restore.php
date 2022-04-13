@@ -17,7 +17,7 @@ define( 'OBR_BACKUP_LENGTH', 3 ); //
  * OBR_OPTIONS
  */
 if(!defined('OBR_OPTIONS')){
-    define( 'OBR_OPTIONS', ['siteurl','sidebars_widgets'] ); 
+	define( 'OBR_OPTIONS', ['siteurl','sidebars_widgets'] ); 
 }
 
 if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
@@ -41,20 +41,20 @@ function option_backup_scheduling() {
 function do_options_backup() {
 	global $wpdb;
 
-    // for each specified option, get current and backup array
-    foreach( OBR_OPTIONS as $option ){
+	// for each specified option, get current and backup array
+	foreach( OBR_OPTIONS as $option ){
 
-        $current_option = get_option( $option );
+		$current_option = get_option( $option );
 
-        if( false !== $current_option ){
-            $backup_options  = get_option( 'obr_backup_'.$option, [] );
+		if( false !== $current_option ){
+			$backup_options  = get_option( 'obr_backup_'.$option, [] );
 
-            $backup_options[ time() ] = $current_option; // adds to end of array
-            $backup_options           = array_slice( $backup_options, ( OBR_BACKUP_LENGTH * -1 ), null, true ); // retain last 3 backups
+			$backup_options[ time() ] = $current_option; // adds to end of array
+			$backup_options           = array_slice( $backup_options, ( OBR_BACKUP_LENGTH * -1 ), null, true ); // retain last 3 backups
 
-            update_option( 'obr_backup_'.$option, $backup_options, 'no' );
-        }
-    }
+			update_option( 'obr_backup_'.$option, $backup_options, 'no' );
+		}
+	}
 }
 
 /**
@@ -83,32 +83,32 @@ class OBR_Restore_Options_CLI {
 	 */
 	public function list_options( $args, $assoc_args ) {
 
-        $data = [];
+		$data = [];
 
-        foreach( OBR_OPTIONS as $option ){
+		foreach( OBR_OPTIONS as $option ){
 
-            $current_option = get_option( $option );
-    
-            if( false !== $current_option ){
+			$current_option = get_option( $option );
+	
+			if( false !== $current_option ){
 
-                $backup_option = get_option('obr_backup_' . $option );
+				$backup_option = get_option('obr_backup_' . $option );
 
-                $backup_count = is_array($backup_option) ? count($backup_option) : 0;
+				$backup_count = is_array($backup_option) ? count($backup_option) : 0;
 
-                $time_keys = [];
+				$time_keys = [];
 
-                if(is_array($backup_option)){
-                    $time_keys = array_keys($backup_option);
-                }
+				if(is_array($backup_option)){
+					$time_keys = array_keys($backup_option);
+				}
 
-                $data[] = [
-                    'option_name' => $option,
-                    'option_backup_name' => 'obr_backup_'.$option,
-                    'backup_count' => $backup_count,
-                    'time_keys' => implode(', ' , $time_keys)
-                ];
-            }
-        }
+				$data[] = [
+					'option_name' => $option,
+					'option_backup_name' => 'obr_backup_'.$option,
+					'backup_count' => $backup_count,
+					'time_keys' => implode(', ' , $time_keys)
+				];
+			}
+		}
 
 		$formatter = new \WP_CLI\Formatter( $assoc_args, [ 'option_name', 'option_backup_name', 'backup_count', 'time_keys' ], 'option_backups' );
 		$formatter->display_items( $data );
@@ -120,9 +120,9 @@ class OBR_Restore_Options_CLI {
 	 *
 	 * ## OPTIONS
 	 *
-     * [<option_name>]
-     * : The name of the option to view
-     * 
+	 * [<option_name>]
+	 * : The name of the option to view
+	 * 
 	 * [<time_key>]
 	 * : See `vip option-backup list`. Defaults to latest
 	 *
@@ -139,31 +139,31 @@ class OBR_Restore_Options_CLI {
 	 */
 	public function view( $args, $assoc_args ) {
 
-        if(!isset($args[0])){
-            \WP_CLI::error( 'Option name not specified.' );
-        }
+		if(!isset($args[0])){
+			\WP_CLI::error( 'Option name not specified.' );
+		}
 
-        $option = $args[0];
+		$option = $args[0];
 
 		$key = $args[1] ?? 'latest';
 
-        if( false === get_option( 'obr_backup_' . $option) ){
-            \WP_CLI::error( 'Option '.$option.' not specified.' );
-        }
+		if( false === get_option( 'obr_backup_' . $option) ){
+			\WP_CLI::error( 'Option '.$option.' not specified.' );
+		}
 
-        $backup_values = get_option( 'obr_backup_' . $option, [] );
+		$backup_values = get_option( 'obr_backup_' . $option, [] );
 
-        if ( 'latest' === $key ) {
-            $backup = array_pop( $backup_values );
-        } else {
-            if ( isset( $backup_values[ $key ] ) ) {
-                $backup = $backup_values[ $key ];
-            } else {
-                \WP_CLI::error( 'Specified backup time_key not found.' );
-            }
-        }
+		if ( 'latest' === $key ) {
+			$backup = array_pop( $backup_values );
+		} else {
+			if ( isset( $backup_values[ $key ] ) ) {
+				$backup = $backup_values[ $key ];
+			} else {
+				\WP_CLI::error( 'Specified backup time_key not found.' );
+			}
+		}
 
-        \WP_CLI::print_value( $backup, $assoc_args );
+		\WP_CLI::print_value( $backup, $assoc_args );
 
 	}
 
@@ -171,9 +171,9 @@ class OBR_Restore_Options_CLI {
 	 * Restore A Backup
 	 *
 	 * ## OPTIONS
-     * 
-     * [<option_name>]
-     * : The name of the option to restore
+	 * 
+	 * [<option_name>]
+	 * : The name of the option to restore
 	 *
 	 * [<time_key>]
 	 * : See `vip option-backup list`. Defaults to latest
@@ -183,15 +183,15 @@ class OBR_Restore_Options_CLI {
 	 */
 	public function restore( $args, $assoc_args ) {
 
-        if(!isset($args[0])){
-            \WP_CLI::error( 'Option name not specified.' );
-        }
+		if(!isset($args[0])){
+			\WP_CLI::error( 'Option name not specified.' );
+		}
 
-        $option = $args[0];
+		$option = $args[0];
 
 		$key = $args[1] ?? 'latest';
 
-        $backup_values = get_option( 'obr_backup_' . $option, [] );
+		$backup_values = get_option( 'obr_backup_' . $option, [] );
 
 		if ( 'latest' === $key ) {
 			$date   = gmdate( 'Y-m-d H:i:s', array_key_last( $backup_values ) );
@@ -212,13 +212,13 @@ class OBR_Restore_Options_CLI {
 			exit;
 		}
 
-        $data[] = [
-            'current_value' => $current_value,
-            'backup_value' => $backup
-        ];
+		$data[] = [
+			'current_value' => $current_value,
+			'backup_value' => $backup
+		];
 
 
-        $formatter = new \WP_CLI\Formatter( $assoc_args, [ 'current_value', 'backup_value' ], 'option_backups' );
+		$formatter = new \WP_CLI\Formatter( $assoc_args, [ 'current_value', 'backup_value' ], 'option_backups' );
 		$formatter->display_items( $data );
 
 
@@ -243,17 +243,17 @@ class OBR_Restore_Options_CLI {
 	 */
 	public function now( $args, $assoc_args ) {
 
-        foreach( OBR_OPTIONS as $option ){
+		foreach( OBR_OPTIONS as $option ){
 
-            $backup_options = get_option( 'obr_backup_' . $option, [] );
-            if ( count( $backup_options ) >= OBR_BACKUP_LENGTH ) {
-                \WP_CLI::confirm( 'This will remove the oldest ' . $option . 'backup. Ok?', $assoc_args );
-            }
+			$backup_options = get_option( 'obr_backup_' . $option, [] );
+			if ( count( $backup_options ) >= OBR_BACKUP_LENGTH ) {
+				\WP_CLI::confirm( 'This will remove the oldest ' . $option . 'backup. Ok?', $assoc_args );
+			}
 
-            \OptionsBackupRestore\do_options_backup();
+			\OptionsBackupRestore\do_options_backup();
 
-            \WP_CLI::success( 'Current option:'.$option.' backed up.' );
-        }
+			\WP_CLI::success( 'Current option:'.$option.' backed up.' );
+		}
 
 	}
 
