@@ -148,7 +148,7 @@ class OBR_Restore_Options_CLI {
 		$key = $args[1] ?? 'latest';
 
 		if( false === get_option( 'obr_backup_' . $option) ){
-			\WP_CLI::error( 'Option '.$option.' not specified.' );
+			\WP_CLI::error( sprintf( 'Option %s not found.', $option ) );
 		}
 
 		$backup_values = get_option( 'obr_backup_' . $option, [] );
@@ -247,7 +247,7 @@ class OBR_Restore_Options_CLI {
 
 			$backup_options = get_option( 'obr_backup_' . $option, [] );
 			if ( count( $backup_options ) >= OBR_BACKUP_LENGTH ) {
-				\WP_CLI::confirm( 'This will remove the oldest ' . $option . 'backup. Ok?', $assoc_args );
+				\WP_CLI::confirm( sprintf( 'This will remove the oldest %s backup. Ok?', $option ), $assoc_args );
 			}
 
 		}
