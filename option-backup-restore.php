@@ -259,4 +259,6 @@ class OBR_Restore_Options_CLI {
 
 }
 
-\WP_CLI::add_command( 'option-backup', __NAMESPACE__ . '\OBR_Restore_Options_CLI' );
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	\WP_CLI::add_command( 'option-backup', __NAMESPACE__ . '\OBR_Restore_Options_CLI' );
+}
