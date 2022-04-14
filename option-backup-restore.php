@@ -250,10 +250,11 @@ class OBR_Restore_Options_CLI {
 				\WP_CLI::confirm( 'This will remove the oldest ' . $option . 'backup. Ok?', $assoc_args );
 			}
 
-			\OptionsBackupRestore\do_options_backup();
-
-			\WP_CLI::success( 'Current option:'.$option.' backed up.' );
 		}
+
+		\OptionsBackupRestore\do_options_backup();
+
+		\WP_CLI::success( 'Options backed up.' );
 
 	}
 
